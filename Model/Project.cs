@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SolutionVersionHandler.Model
 {
-  internal class Project : NotifyPropertyChanged
+  public class Project : NotifyPropertyChanged
   {
     public string Name { get => base.GetProperty<string>(nameof(Name))!; set => base.UpdateProperty(nameof(Name), value); }
     public string FilePath { get => base.GetProperty<string>(nameof(FilePath))!; set => base.UpdateProperty(nameof(FilePath), value); }

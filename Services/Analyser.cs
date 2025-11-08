@@ -2,6 +2,7 @@
 using SolutionVersionHandler.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,7 +31,7 @@ namespace SolutionVersionHandler.Services
       var projectLines = lines
         .Where(l => l.TrimStart().StartsWith("Project(", StringComparison.OrdinalIgnoreCase));
 
-      var projects = new List<Project>();
+      var projects = new BindingList<Project>();
       var quoteRegex = new Regex(@"Project\(""(.+)\""\) = ""(.+)"", ""(.+)"", ""(.+)""", RegexOptions.Compiled);
 
       foreach (var line in projectLines)

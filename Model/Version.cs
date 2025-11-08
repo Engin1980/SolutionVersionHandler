@@ -42,7 +42,7 @@ namespace SolutionVersionHandler.Model
       };
     }
 
-    internal Version Copy()
+    public Version Clone()
     {
       return new Version()
       {

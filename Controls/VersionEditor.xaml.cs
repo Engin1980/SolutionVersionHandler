@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SolutionVersionHandler.Model;
+using System.ComponentModel;
+using System.Printing;
 
 namespace SolutionVersionHandler
 {
@@ -20,148 +23,171 @@ namespace SolutionVersionHandler
   /// </summary>
   public partial class VersionEditor : UserControl
   {
-    // legacy CLR events (kept for compatibility)
-    public delegate void SpreadDelegate(Model.Version version);
-    public event SpreadDelegate? SpreadAcrossProjectRequested;
-    public event SpreadDelegate? SpreadAcrossVersionTypeRequested;
-    public event Action? RemoveVersionRequested;
-
-    // DependencyProperty for Version
-    public static readonly DependencyProperty VersionProperty = DependencyProperty.Register(
-      nameof(Version),
-      typeof(Model.Version),
+    public static readonly DependencyProperty ProjectsProperty = DependencyProperty.Register(
+      nameof(Projects),
+      typeof(BindingList<Model.Project>),
       typeof(VersionEditor),
-      new PropertyMetadata(null));
+      new PropertyMetadata(new BindingList<Model.Project>(), OnDependencyPropertyValueChanged));
 
-    // ICommand DPs (new) - prefer these in MVVM usage
-    public static readonly DependencyProperty SpreadAcrossProjectsCommandProperty = DependencyProperty.Register(
-      nameof(SpreadAcrossProjectsCommand),
-      typeof(ICommand),
+    private static void OnDependencyPropertyValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+      var me = (VersionEditor)d;
+      me.OnDependencyPropertyValueChanged();
+    }
+
+    private void OnDependencyPropertyValueChanged()
+    {
+      if (SelectedProject == null)
+        ShownVersion = null;
+      else
+      {
+        var getter = GetGetterByType(VersionType);
+        ShownVersion = getter(SelectedProject);
+        System.Diagnostics.Debug.WriteLine($"Project {SelectedProject.Name} version {VersionType} changed to: {ShownVersion}");
+      }
+
+      if (ShownVersion == null)
+      {
+        pnlEmpty.Visibility = Visibility.Visible;
+        pnlUnparseable.Visibility = pnlVersion.Visibility = Visibility.Collapsed;
+      }
+      else if (ShownVersion.Unparseable != null)
+      {
+        pnlUnparseable.Visibility = Visibility.Visible;
+        pnlEmpty.Visibility = pnlVersion.Visibility = Visibility.Collapsed;
+      }
+      else
+      {
+        pnlVersion.Visibility = Visibility.Visible;
+        pnlEmpty.Visibility = pnlUnparseable.Visibility = Visibility.Collapsed;
+      }
+    }
+
+    private static Func<Project, Model.Version?> GetGetterByType(EVersionType type)
+    {
+      return type switch
+      {
+        EVersionType.AssemblyVersion => ((Project p) => p.AssemblyVersion),
+        EVersionType.FileVersion => (Project p) => p.FileVersion,
+        EVersionType.PackageVersion => (Project p) => p.PackageVersion,
+        EVersionType.Version => (Project p) => p.Version,
+        _ => throw new NotImplementedException()
+      };
+    }
+
+    private static Action<Project, Model.Version?> GetSetterByType(EVersionType type)
+    {
+      return type switch
+      {
+        EVersionType.AssemblyVersion => ((Project p, Model.Version? v) => p.AssemblyVersion = v),
+        EVersionType.FileVersion => ((Project p, Model.Version? v) => p.FileVersion = v),
+        EVersionType.PackageVersion => ((Project p, Model.Version? v) => p.PackageVersion = v),
+        EVersionType.Version => ((Project p, Model.Version? v) => p.Version = v),
+        _ => throw new NotImplementedException()
+      };
+    }
+
+
+    public BindingList<Project> Projects
+    {
+      get { return (BindingList<Project>)GetValue(ProjectsProperty); }
+      set { SetValue(ProjectsProperty, value); }
+    }
+
+    public static readonly DependencyProperty SelectedProjectProperty = DependencyProperty.Register(
+      nameof(SelectedProject),
+      typeof(Model.Project),
       typeof(VersionEditor),
-      new PropertyMetadata(null));
+      new PropertyMetadata(null, OnDependencyPropertyValueChanged));
+    public Model.Project SelectedProject
+    {
+      get { return (Model.Project)GetValue(SelectedProjectProperty); }
+      set { SetValue(SelectedProjectProperty, value); }
+    }
 
-    public static readonly DependencyProperty SpreadAcrossVersionTypesCommandProperty = DependencyProperty.Register(
-      nameof(SpreadAcrossVersionTypesCommand),
-      typeof(ICommand),
+    public static readonly DependencyProperty VersionTypeProperty = DependencyProperty.Register(
+      nameof(VersionType),
+      typeof(EVersionType),
       typeof(VersionEditor),
-      new PropertyMetadata(null));
+      new PropertyMetadata(EVersionType.Version, OnDependencyPropertyValueChanged));
 
-    public static readonly DependencyProperty RemoveVersionCommandProperty = DependencyProperty.Register(
-      nameof(RemoveVersionCommand),
-      typeof(ICommand),
-      typeof(VersionEditor),
-      new PropertyMetadata(null));
+    public EVersionType VersionType
+    {
+      get { return (EVersionType)GetValue(VersionTypeProperty); }
+      set { SetValue(VersionTypeProperty, value); }
+    }
 
-    // Optional command parameter DPs (if caller wants to pass something other than Version)
-    public static readonly DependencyProperty SpreadAcrossProjectsCommandParameterProperty = DependencyProperty.Register(
-      nameof(SpreadAcrossProjectsCommandParameter),
-      typeof(object),
-      typeof(VersionEditor),
-      new PropertyMetadata(null));
-
-    public static readonly DependencyProperty SpreadAcrossVersionTypesCommandParameterProperty = DependencyProperty.Register(
-      nameof(SpreadAcrossVersionTypesCommandParameter),
-      typeof(object),
-      typeof(VersionEditor),
-      new PropertyMetadata(null));
-
-    public static readonly DependencyProperty RemoveVersionCommandParameterProperty = DependencyProperty.Register(
-      nameof(RemoveVersionCommandParameter),
-      typeof(object),
-      typeof(VersionEditor),
-      new PropertyMetadata(null));
-
+    private static List<VersionEditor> instances = [];
     public VersionEditor()
     {
       InitializeComponent();
+      instances.Add(this);
     }
 
-    public Model.Version Version
+    public static void ForceRebind()
     {
-      get { return (Model.Version)this.GetValue(VersionProperty); }
-      set { this.SetValue(VersionProperty, value); }
+      foreach (var instance in instances)
+        instance.ForceRebindThis();
+    }
+    public void ForceRebindThis()
+    {
+      this.OnDependencyPropertyValueChanged();
     }
 
-    // ICommand CLR wrappers
-    public ICommand? SpreadAcrossProjectsCommand
-    {
-      get => (ICommand?)GetValue(SpreadAcrossProjectsCommandProperty);
-      set => SetValue(SpreadAcrossProjectsCommandProperty, value);
-    }
 
-    public ICommand? SpreadAcrossVersionTypesCommand
-    {
-      get => (ICommand?)GetValue(SpreadAcrossVersionTypesCommandProperty);
-      set => SetValue(SpreadAcrossVersionTypesCommandProperty, value);
-    }
+    private static readonly DependencyProperty ShownVersionProperty = DependencyProperty.Register(
+      nameof(ShownVersion),
+      typeof(Model.Version),
+      typeof(VersionEditor),
+      new PropertyMetadata(null, OnDependencyPropertyValueChanged));
 
-    public ICommand? RemoveVersionCommand
+    private Model.Version? ShownVersion
     {
-      get => (ICommand?)GetValue(RemoveVersionCommandProperty);
-      set => SetValue(RemoveVersionCommandProperty, value);
-    }
-
-    // Optional command parameters
-    public object? SpreadAcrossProjectsCommandParameter
-    {
-      get => GetValue(SpreadAcrossProjectsCommandParameterProperty);
-      set => SetValue(SpreadAcrossProjectsCommandParameterProperty, value);
-    }
-
-    public object? SpreadAcrossVersionTypesCommandParameter
-    {
-      get => GetValue(SpreadAcrossVersionTypesCommandParameterProperty);
-      set => SetValue(SpreadAcrossVersionTypesCommandParameterProperty, value);
-    }
-
-    public object? RemoveVersionCommandParameter
-    {
-      get => GetValue(RemoveVersionCommandParameterProperty);
-      set => SetValue(RemoveVersionCommandParameterProperty, value);
+      get { return (Model.Version?)GetValue(ShownVersionProperty); }
+      set { this.SetValue(ShownVersionProperty, value); }
     }
 
     private void btnSpreadAcrossProjects_Click(object sender, RoutedEventArgs e)
     {
-      // Try command first
-      if (!ExecuteCommand(SpreadAcrossProjectsCommand, SpreadAcrossProjectsCommandParameter ?? this.Version))
-      {
-        // fallback to legacy event
-        this.SpreadAcrossProjectRequested?.Invoke(this.Version);
-      }
+      var getter = GetGetterByType(VersionType);
+      var setter = GetSetterByType(VersionType);
+      Model.Version? v = getter(this.SelectedProject)?.Clone();
+      foreach (var project in Projects)
+        setter(project, v);
+      ForceRebind();
     }
 
     private void btnSpreadAcrossVersionTypes_Click(object sender, RoutedEventArgs e)
     {
-      if (!ExecuteCommand(SpreadAcrossVersionTypesCommand, SpreadAcrossVersionTypesCommandParameter ?? this.Version))
+      var getter = GetGetterByType(VersionType);
+      Model.Version? v = getter(this.SelectedProject)?.Clone();
+      foreach (EVersionType vt in Enum.GetValues(typeof(EVersionType)))
       {
-        this.SpreadAcrossVersionTypeRequested?.Invoke(this.Version);
+        var setter = GetSetterByType(vt);
+        setter(SelectedProject, v);
       }
+      ForceRebind();
     }
 
     private void btnRemoveVersion_Click(object sender, RoutedEventArgs e)
     {
-      if (!ExecuteCommand(RemoveVersionCommand, RemoveVersionCommandParameter ?? this.Version))
-      {
-        this.RemoveVersionRequested?.Invoke();
-      }
+      var setter = GetSetterByType(VersionType);
+      setter(SelectedProject, null);
+      ForceRebindThis();
     }
 
-    private bool ExecuteCommand(ICommand? command, object? parameter)
+    private void btnNewTextVersion_Click(object sender, RoutedEventArgs e)
     {
-      if (command == null) return false;
-      try
-      {
-        if (command.CanExecute(parameter))
-        {
-          command.Execute(parameter);
-          return true;
-        }
-      }
-      catch
-      {
-        // swallow exceptions from commands to avoid breaking UI; caller should handle errors
-      }
-      return false;
+      var setter = GetSetterByType(VersionType);
+      setter(SelectedProject, new Model.Version { Unparseable = "${?}" });
+      ForceRebindThis();
+    }
+
+    private void btnNewNumericVersion_Click(object sender, RoutedEventArgs e)
+    {
+      var setter = GetSetterByType(VersionType);
+      setter(SelectedProject, new Model.Version());
+      ForceRebindThis();
     }
   }
 }

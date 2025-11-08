@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SolutionVersionHandler"
         xmlns:ctr="clr-namespace:SolutionVersionHandler.Controls"
+        xmlns:model="clr-namespace:SolutionVersionHandler.Model"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
   <DockPanel>
@@ -30,52 +31,40 @@
         <DataGridTemplateColumn Header="Version">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
-              <local:VersionEditor Version="{Binding Version}"
-                                   SpreadAcrossProjectsCommand="{Binding DataContext.SpreadAcrossProjectsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                   SpreadAcrossProjectsCommandParameter="{Binding}"
-                                   SpreadAcrossVersionTypesCommand="{Binding DataContext.SpreadAcrossVersionTypesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                   SpreadAcrossVersionTypesCommandParameter="{Binding}"
-                                   RemoveVersionCommand="{Binding DataContext.RemoveVersionCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                   RemoveVersionCommandParameter="{Binding}" />
+              <local:VersionEditor 
+                  Projects="{Binding DataContext.Projects, RelativeSource={RelativeSource AncestorType=Window}}"
+                  SelectedProject="{Binding}" 
+                  VersionType="{x:Static model:EVersionType.Version}" />
             </DataTemplate>
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
         <DataGridTemplateColumn Header="Assembly Version">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
-              <local:VersionEditor Version="{Binding AssemblyVersion}"
-                                   SpreadAcrossProjectsCommand="{Binding DataContext.SpreadAcrossProjectsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                   SpreadAcrossProjectsCommandParameter="{Binding}"
-                                   SpreadAcrossVersionTypesCommand="{Binding DataContext.SpreadAcrossVersionTypesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                   SpreadAcrossVersionTypesCommandParameter="{Binding}"
-                                   RemoveVersionCommand="{Binding DataContext.RemoveVersionCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                   RemoveVersionCommandParameter="{Binding}" />
+              <local:VersionEditor 
+                  Projects="{Binding DataContext.Projects, RelativeSource={RelativeSource AncestorType=Window}}"
+                  SelectedProject="{Binding}" 
+                  VersionType="{x:Static model:EVersionType.AssemblyVersion}" />
             </DataTemplate>
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
         <DataGridTemplateColumn Header="File Version">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
-              <local:VersionEditor Version="{Binding FileVersion}"
-                                   SpreadAcrossProjectsCommand="{Binding DataContext.SpreadAcrossProjectsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                   SpreadAcrossProjectsCommandParameter="{Binding}"
-                                   SpreadAcrossVersionTypesCommand="{Binding DataContext.SpreadAcrossVersionTypesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                   SpreadAcrossVersionTypesCommandParameter="{Binding}"
-                                   RemoveVersionCommand="{Binding DataContext.RemoveVersionCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                   RemoveVersionCommandParameter="{Binding}" />
+              <local:VersionEditor 
+                  Projects="{Binding DataContext.Projects, RelativeSource={RelativeSource AncestorType=Window}}"
+                  SelectedProject="{Binding}" 
+                  VersionType="{x:Static model:EVersionType.FileVersion}" />
             </DataTemplate>
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
         <DataGridTemplateColumn Header="Package Version">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
-              <local:VersionEditor Version="{Binding PackageVersion}"
-                                   SpreadAcrossProjectsCommand="{Binding DataContext.SpreadAcrossProjectsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                   SpreadAcrossProjectsCommandParameter="{Binding}"
-                                   SpreadAcrossVersionTypesCommand="{Binding DataContext.SpreadAcrossVersionTypesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                   SpreadAcrossVersionTypesCommandParameter="{Binding}"
-                                   RemoveVersionCommand="{Binding DataContext.RemoveVersionCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                   RemoveVersionCommandParameter="{Binding}" />
+              <local:VersionEditor 
+                  Projects="{Binding DataContext.Projects, RelativeSource={RelativeSource AncestorType=Window}}"
+                  SelectedProject="{Binding}" 
+                  VersionType="{x:Static model:EVersionType.PackageVersion}" />
             </DataTemplate>
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
