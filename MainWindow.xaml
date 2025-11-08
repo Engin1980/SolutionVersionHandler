@@ -1,0 +1,62 @@
+﻿<Window x:Class="SolutionVersionHandler.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SolutionVersionHandler"
+        xmlns:ctr="clr-namespace:SolutionVersionHandler.Controls"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+  <DockPanel>
+    <DockPanel DockPanel.Dock="Top">
+      <GroupBox Header="Transfer">
+        <StackPanel Orientation="Horizontal">
+          <Label>From</Label>
+          <ctr:VersionSelector />
+          <Label>To</Label>
+          <ctr:VersionSelector />
+          <Button Content="Transfer" Margin="8,0,0,0" />
+        </StackPanel>
+      </GroupBox>
+    </DockPanel>
+    <DataGrid x:Name="grdData"
+                  ItemsSource="{Binding}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  Margin="8">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Project" Binding="{Binding Name}" />
+        <DataGridTemplateColumn Header="Version">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <local:VersionEditor Version="{Binding Version}" />
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Assembly Version">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <local:VersionEditor Version="{Binding AssemblyVersion}" />
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="File Version">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <local:VersionEditor Version="{Binding FileVersion}" />
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Package Version">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <local:VersionEditor Version="{Binding PackageVersion}" />
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTextColumn Header="TMP" Binding="{Binding AssemblyVersion.FullVersion}" />
+      </DataGrid.Columns>
+    </DataGrid>
+  </DockPanel>
+</Window>
