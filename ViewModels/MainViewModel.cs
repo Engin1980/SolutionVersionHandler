@@ -24,29 +24,66 @@ namespace SolutionVersionHandler.ViewModels
 
     private void OnSpreadAcrossProjects(object? parameter)
     {
-      var item = parameter as Project;
-      if (item != null)
+      var pav = parameter as ProjectAndVersion;
+      var project = pav?.Project ?? parameter as Project;
+      var version = pav?.Version ?? parameter as SolutionVersionHandler.Model.Version;
+
+      if (project == null) throw new ApplicationException("Unexpected null.");
+      if (version == null) throw new ApplicationException("Unexpected null.");
+
+      Action<Project, Model.Version> adjuster;
+      if (project.AssemblyVersion == version)
+        adjuster = (p, v) => p.AssemblyVersion = v;
+      else if (project.FileVersion == version)
+        adjuster = (p, v) => p.FileVersion = v;
+      else if (project.PackageVersion == version)
+        adjuster = (p, v) => p.PackageVersion = v;
+      else if (project.Version == version)
+        adjuster = (p, v) => p.Version = v;
+      else
+        throw new ApplicationException("Unknown version of the project.");
+
+      foreach (var p in Projects)
       {
-        MessageBox.Show($"Spread across projects requested for {item.Name}");
+        if (p == null) continue;
+        adjuster(p, (Model.Version)version.Copy()!);
       }
     }
 
     private void OnSpreadAcrossVersionTypes(object? parameter)
     {
-      var item = parameter as Project;
-      if (item != null)
-      {
-        MessageBox.Show($"Spread across version types requested for {item.Name}");
-      }
+      var pav = parameter as ProjectAndVersion;
+      var project = pav?.Project ?? parameter as Project;
+      var version = pav?.Version ?? parameter as SolutionVersionHandler.Model.Version;
+
+      if (project == null) throw new ApplicationException("Unexpected null.");
+      if (version == null) throw new ApplicationException("Unexpected null.");
+
+      project.AssemblyVersion = version;
+      project.Version = version;
+      project.FileVersion = version;
+      project.PackageVersion = version;
     }
 
     private void OnRemoveVersion(object? parameter)
     {
-      var item = parameter as Project;
-      if (item != null)
-      {
-        MessageBox.Show($"Remove version requested for {item.Name}");
-      }
+      var pav = parameter as ProjectAndVersion;
+      var project = pav?.Project ?? parameter as Project;
+      var version = pav?.Version ?? parameter as SolutionVersionHandler.Model.Version;
+
+      if (project == null) throw new ApplicationException("Unexpected null.");
+      if (version == null) throw new ApplicationException("Unexpected null.");
+
+      if (project.AssemblyVersion == version)
+        project.AssemblyVersion = null;
+      else if (project.FileVersion == version)
+        project.FileVersion = null;
+      else if (project.PackageVersion == version)
+        project.PackageVersion = null;
+      else if (project.Version == version)
+        project.Version = null;
+      else
+        throw new ApplicationException("Unknown version of the project.");
     }
 
     // Simple RelayCommand implementation

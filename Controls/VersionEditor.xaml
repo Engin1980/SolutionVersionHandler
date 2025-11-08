@@ -6,6 +6,10 @@
              xmlns:local="clr-namespace:SolutionVersionHandler"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+  <UserControl.Resources>
+    <local:ProjectVersionMultiConverter x:Key="ProjectVersionMultiConverter" />
+  </UserControl.Resources>
+
   <Grid DataContext="{Binding Version, RelativeSource={RelativeSource AncestorType={x:Type local:VersionEditor}}}">
     <StackPanel x:Name="pnlEmpty">
       <StackPanel.Style>
@@ -37,9 +41,41 @@
       <TextBox x:Name="txtBuild" Text="{Binding Build}" Width="25" Margin="2" />
       <TextBox x:Name="txtRevision" Text="{Binding Revision}" Width="25" Margin="2" />
 
-      <Button x:Name="btnSpreadAcrossProjects" Content="Spread Projects" Click="btnSpreadAcrossProjects_Click" Margin="4" />
-      <Button x:Name="btnSpreadAcrossVersionTypes" Content="Spread Types" Click="btnSpreadAcrossVersionTypes_Click" Margin="4" />
-      <Button x:Name="btnRemoveVersion" Content="Remove" Click="btnRemoveVersion_Click" Margin="4" />
+      <Button x:Name="btnSpreadAcrossProjects" Content="⇅" Click="btnSpreadAcrossProjects_Click" Margin="4">
+        <Button.Command>
+          <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext.SpreadAcrossProjectsCommand" />
+        </Button.Command>
+        <Button.CommandParameter>
+          <MultiBinding Converter="{StaticResource ProjectVersionMultiConverter}">
+            <Binding RelativeSource="{RelativeSource AncestorType=DataGridRow}" Path="Item" />
+            <Binding Path="." />
+          </MultiBinding>
+        </Button.CommandParameter>
+      </Button>
+
+      <Button x:Name="btnSpreadAcrossVersionTypes" Content="⇄" Click="btnSpreadAcrossVersionTypes_Click" Margin="4">
+        <Button.Command>
+          <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext.SpreadAcrossVersionTypesCommand" />
+        </Button.Command>
+        <Button.CommandParameter>
+          <MultiBinding Converter="{StaticResource ProjectVersionMultiConverter}">
+            <Binding RelativeSource="{RelativeSource AncestorType=DataGridRow}" Path="Item" />
+            <Binding Path="." />
+          </MultiBinding>
+        </Button.CommandParameter>
+      </Button>
+
+      <Button x:Name="btnRemoveVersion" Content="⛒" Click="btnRemoveVersion_Click" Margin="4">
+        <Button.Command>
+          <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext.RemoveVersionCommand" />
+        </Button.Command>
+        <Button.CommandParameter>
+          <MultiBinding Converter="{StaticResource ProjectVersionMultiConverter}">
+            <Binding RelativeSource="{RelativeSource AncestorType=DataGridRow}" Path="Item" />
+            <Binding Path="." />
+          </MultiBinding>
+        </Button.CommandParameter>
+      </Button>
     </StackPanel>
   </Grid>
 </UserControl>

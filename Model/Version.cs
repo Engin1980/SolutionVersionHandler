@@ -29,6 +29,15 @@ namespace SolutionVersionHandler.Model
 
     public string FullVersion => $"{Major}.{Minor}.{Build}.{Revision}";
 
-
+    internal Version Copy()
+    {
+      return new Version()
+      {
+        Major = this.Major,
+        Minor = this.Minor,
+        Build = this.Build,
+        Revision = this.Revision
+      };
+    }
   }
 }
