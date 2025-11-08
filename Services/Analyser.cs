@@ -92,19 +92,47 @@ namespace SolutionVersionHandler.Services
         string? tmp;
         tmp = GetProperty("Version");
         if (!string.IsNullOrWhiteSpace(tmp))
-          project.Version = TryParseVersion(tmp);
+          try
+          {
+            project.Version = ParseVersion(tmp);
+          }
+          catch
+          {
+            project.Version = Model.Version.AsUnparseable(tmp);
+          }
 
         tmp = GetProperty("FileVersion");
         if (!string.IsNullOrWhiteSpace(tmp))
-          project.FileVersion = TryParseVersion(tmp);
+          try
+          {
+            project.FileVersion = ParseVersion(tmp);
+          }
+          catch
+          {
+            project.FileVersion = Model.Version.AsUnparseable(tmp);
+          }
 
         tmp = GetProperty("PackageVersion");
         if (!string.IsNullOrWhiteSpace(tmp))
-          project.PackageVersion = TryParseVersion(tmp);
+          try
+          {
+            project.PackageVersion = ParseVersion(tmp);
+          }
+          catch
+          {
+            project.PackageVersion = Model.Version.AsUnparseable(tmp);
+          }
 
         tmp = GetProperty("AssemblyVersion");
         if (!string.IsNullOrWhiteSpace(tmp))
-          project.AssemblyVersion = TryParseVersion(tmp);
+          try
+          {
+            project.AssemblyVersion = ParseVersion(tmp);
+          }
+          catch
+          {
+            project.AssemblyVersion = Model.Version.AsUnparseable(tmp);
+          }
 
         project.VersionPrefix = GetProperty("VersionPrefix") ?? null;
         project.VersionSuffix = GetProperty("VersionSuffix") ?? null;
@@ -117,7 +145,7 @@ namespace SolutionVersionHandler.Services
       return project;
     }
 
-    private Model.Version? TryParseVersion(string versionString)
+    private Model.Version ParseVersion(string versionString)
     {
       versionString = versionString.Trim();
       versionString = versionString.Trim('"');
@@ -143,7 +171,10 @@ namespace SolutionVersionHandler.Services
           Revision = ParseGroup(4)
         };
       }
-      return null;
+      else
+      {
+        throw new ApplicationException($"Unable to parse version string '{versionString}'.");
+      }
     }
   }
 }

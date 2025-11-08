@@ -8,6 +8,8 @@
              d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
     <local:ProjectVersionMultiConverter x:Key="ProjectVersionMultiConverter" />
+    <local:VersionUnparseableVisibilityConverter x:Key="VersionUnparseableVisibilityConverter" />
+    <local:VersionParseableVisibilityConverter x:Key="VersionParseableVisibilityConverter" />
   </UserControl.Resources>
 
   <Grid DataContext="{Binding Version, RelativeSource={RelativeSource AncestorType={x:Type local:VersionEditor}}}">
@@ -24,17 +26,23 @@
       </StackPanel.Style>
       <Label>Empty</Label>
     </StackPanel>
+    <StackPanel x:Name="pnlUnparseable">
+      <StackPanel.Visibility>
+        <MultiBinding Converter="{StaticResource VersionUnparseableVisibilityConverter}">
+          <!-- bind to Version (DataContext) and its Unparseable property -->
+          <Binding Path="." />
+          <Binding Path="Unparseable" />
+        </MultiBinding>
+      </StackPanel.Visibility>
+      <TextBox Text="{Binding Unparseable}" />
+    </StackPanel>
     <StackPanel x:Name="pnlVersion" Orientation="Horizontal">
-      <StackPanel.Style>
-        <Style TargetType="StackPanel">
-          <Setter Property="Visibility" Value="Visible" />
-          <Style.Triggers>
-            <DataTrigger Binding="{Binding}" Value="{x:Null}">
-              <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-          </Style.Triggers>
-        </Style>
-      </StackPanel.Style>
+      <StackPanel.Visibility>
+        <MultiBinding Converter="{StaticResource VersionParseableVisibilityConverter}">
+          <Binding Path="." />
+          <Binding Path="Unparseable" />
+        </MultiBinding>
+      </StackPanel.Visibility>
 
       <TextBox x:Name="txtMajor" Text="{Binding Major}" Width="25" Margin="2" />
       <TextBox x:Name="txtMinor" Text="{Binding Minor}" Width="25" Margin="2" />
