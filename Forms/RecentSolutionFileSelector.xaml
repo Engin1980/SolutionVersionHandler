@@ -23,10 +23,13 @@
         <ComboBox.ItemTemplate>
           <DataTemplate>
             <StackPanel Orientation="Horizontal">
-              <TextBlock Text="{Binding FileName}" />
-              <TextBlock Text=" (" Foreground="Gray" />
-              <TextBlock Text="{Binding FilePath}" Foreground="Gray" />
-              <TextBlock Text=")" Foreground="Gray" />
+              <Button x:Name="btnDeleteRecentSolutionFile" Click="btnDeleteRecentSolutionFile_Click" Content="⌦" Margin="0 0 2 0" Padding="4 0 2 0" />
+              <StackPanel Orientation="Horizontal" Margin="2">
+                <TextBlock Text="{Binding FileName}" />
+                <TextBlock Text=" (" Foreground="Gray" />
+                <TextBlock Text="{Binding FilePath}" Foreground="Gray" />
+                <TextBlock Text=")" Foreground="Gray" />
+              </StackPanel>
             </StackPanel>
           </DataTemplate>
         </ComboBox.ItemTemplate>
