@@ -152,6 +152,7 @@ namespace SolutionVersionHandler
       var getter = GetGetterByType(VersionType);
       var setter = GetSetterByType(VersionType);
       Model.Version? v = getter(this.SelectedProject)?.Clone();
+      var projs = this.Projects.Count(q => q.IsChecked) == 0 ? this.Projects : this.Projects.Where(q => q.IsChecked);
       foreach (var project in Projects)
         setter(project, v);
       ForceRebind();

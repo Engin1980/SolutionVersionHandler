@@ -11,10 +11,12 @@
         DataContext="{Binding ShownVersion, RelativeSource={RelativeSource AncestorType={x:Type local:VersionEditor}}}">
     <DockPanel x:Name="pnlEmpty">
       <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-        <Button x:Name="btnNewTextVersion" Content="(+txt)" Click="btnNewTextVersion_Click" Margin="4" />
-        <Button x:Name="btnNewNumericVersion" Content="(+num)" Click="btnNewNumericVersion_Click" Margin="4" />
+        <Button x:Name="btnSpreadAcrossProjects3" Content="⇅" Click="btnSpreadAcrossProjects_Click" Margin="4" />
+        <Button x:Name="btnSpreadAcrossVersionTypes3" Content="⇄" Click="btnSpreadAcrossVersionTypes_Click" Margin="4" />
+        <Button x:Name="btnNewTextVersion" Content="✚＄{..}" Click="btnNewTextVersion_Click" Margin="4" />
+        <Button x:Name="btnNewNumericVersion" Content="✚1.2.3.4" Click="btnNewNumericVersion_Click" Margin="4" />
       </StackPanel>
-      <Label>Empty</Label>
+      <Label>(not defined)</Label>
     </DockPanel>
     <DockPanel x:Name="pnlUnparseable">
 

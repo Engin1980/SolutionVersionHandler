@@ -7,19 +7,39 @@
         xmlns:ctr="clr-namespace:SolutionVersionHandler.Controls"
         xmlns:model="clr-namespace:SolutionVersionHandler.Model"
         mc:Ignorable="d"
+        FontSize="14"
+        FontFamily="Bookman Old Style"
         Title="MainWindow" Height="450" Width="800">
-  <DockPanel>
+  <DockPanel x:Name="pnlMainPanel">
     <DockPanel DockPanel.Dock="Top">
-      <GroupBox Header="Transfer">
+      <GroupBox Header="Open &amp; Save" Margin="8">
         <StackPanel Orientation="Horizontal">
-          <Label>From</Label>
-          <ctr:VersionSelector />
-          <Label>To</Label>
-          <ctr:VersionSelector />
-          <Button Content="Transfer" Margin="8,0,0,0" />
+          <Button x:Name="btnLoadSolution" Margin="8" Padding="6" Click="btnLoadSolution_Click" >📂</Button>
+          <Button x:Name="btnLoadRecentSolution" Margin="8" Padding="6" Click="btnLoadSolution_Click" >🕔📂</Button>
+          <Button Margin="8" Padding="6" >⭮</Button>
+          <Button x:Name="btnSaveProjects" Margin="8" Padding="6" Click="btnSaveProjects_Click" >💾</Button>
+        </StackPanel>
+      </GroupBox>
+      <GroupBox Header="UI" Margin="8">
+        <StackPanel Orientation="Horizontal">
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Margin="8 8 0 8" Padding="6" Text="Visible cols:" />
+            <ComboBox x:Name="cmbColumns" ItemsSource="{Binding Columns}" Margin="0 8 8 8" Padding="6" 
+                SelectionChanged="cmbColumns_SelectionChanged">
+              <ComboBox.ItemTemplate>
+                <DataTemplate>
+                  <StackPanel Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding IsVisible}" />
+                    <TextBlock Text="{Binding Title}" />
+                  </StackPanel>
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+          </StackPanel>
         </StackPanel>
       </GroupBox>
     </DockPanel>
+    <FrameworkElement x:Name="dummyElement" Visibility="Collapsed"/>
     <DataGrid x:Name="grdData"
                   ItemsSource="{Binding Projects}"
                   AutoGenerateColumns="False"
@@ -27,8 +47,23 @@
                   IsReadOnly="True"
                   Margin="8">
       <DataGrid.Columns>
-        <DataGridTextColumn Header="Project" Binding="{Binding Name}" />
-        <DataGridTemplateColumn Header="Version">
+        <DataGridTemplateColumn Header="?">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <CheckBox IsChecked="{Binding IsChecked}" />
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTextColumn 
+          Header="{Binding DataContext.Columns.ProjectColumn.Title, Source={x:Reference dummyElement}}"
+          Binding="{Binding Name}"
+          Visibility="{Binding DataContext.Columns.ProjectColumn.Visibility, Source={x:Reference dummyElement}}" />
+        <DataGridTextColumn Header="Project Path" 
+                            Binding="{Binding FilePath}"
+                            Visibility="{Binding DataContext.Columns.ProjectPathColumn.Visibility, Source={x:Reference dummyElement}}" />
+        <DataGridTemplateColumn 
+          Header="{Binding DataContext.Columns.VersionColumn.Title, Source={x:Reference dummyElement}}" 
+          Visibility="{Binding DataContext.Columns.VersionColumn.Visibility, Source={x:Reference dummyElement}}">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
               <local:VersionEditor 
@@ -38,7 +73,9 @@
             </DataTemplate>
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
-        <DataGridTemplateColumn Header="Assembly Version">
+        <DataGridTemplateColumn 
+          Header="{Binding DataContext.Columns.AssemblyVersionColumn.Title, Source={x:Reference dummyElement}}"
+          Visibility="{Binding DataContext.Columns.AssemblyVersionColumn.Visibility, Source={x:Reference dummyElement}}">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
               <local:VersionEditor 
@@ -48,7 +85,9 @@
             </DataTemplate>
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
-        <DataGridTemplateColumn Header="File Version">
+        <DataGridTemplateColumn 
+          Header="{Binding DataContext.Columns.FileVersionColumn.Title, Source={x:Reference dummyElement}}"
+          Visibility="{Binding DataContext.Columns.FileVersionColumn.Visibility, Source={x:Reference dummyElement}}">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
               <local:VersionEditor 
@@ -58,7 +97,9 @@
             </DataTemplate>
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
-        <DataGridTemplateColumn Header="Package Version">
+        <DataGridTemplateColumn 
+          Header="{Binding DataContext.Columns.PackageVersionColumn.Title, Source={x:Reference dummyElement}}"
+          Visibility="{Binding DataContext.Columns.PackageVersionColumn.Visibility, Source={x:Reference dummyElement}}">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
               <local:VersionEditor 
@@ -68,7 +109,6 @@
             </DataTemplate>
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
-        <DataGridTextColumn Header="TMP" Binding="{Binding AssemblyVersion.FullVersion}" />
       </DataGrid.Columns>
     </DataGrid>
   </DockPanel>

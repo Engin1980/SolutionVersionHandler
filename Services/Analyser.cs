@@ -53,8 +53,11 @@ namespace SolutionVersionHandler.Services
             ? Path.GetFullPath(normalized)
             : Path.GetFullPath(Path.Combine(solutionDir, normalized));
 
-          Project project = AnalyseProject(projFullPath, projName);
-          projects.Add(project);
+          if (projFullPath.ToLower().EndsWith("proj"))
+          {
+            Project project = AnalyseProject(projFullPath, projName);
+            projects.Add(project);
+          }
         }
       }
 
