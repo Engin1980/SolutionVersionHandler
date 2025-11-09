@@ -15,7 +15,7 @@
       <GroupBox Header="Open &amp; Save" Margin="8">
         <StackPanel Orientation="Horizontal">
           <Button x:Name="btnLoadSolution" Margin="8" Padding="6" Click="btnLoadSolution_Click" >📂</Button>
-          <Button x:Name="btnLoadRecentSolution" Margin="8" Padding="6" Click="btnLoadSolution_Click" >🕔📂</Button>
+          <Button x:Name="btnLoadRecentSolution" Margin="8" Padding="6" Click="btnLoadRecentSolution_Click" >🕔📂</Button>
           <Button Margin="8" Padding="6" >⭮</Button>
           <Button x:Name="btnSaveProjects" Margin="8" Padding="6" Click="btnSaveProjects_Click" >💾</Button>
         </StackPanel>
@@ -81,7 +81,7 @@
           </DataGridTemplateColumn.Header>
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
-              <local:VersionEditor 
+              <ctr:VersionEditor 
                   Projects="{Binding DataContext.Projects, RelativeSource={RelativeSource AncestorType=Window}}"
                   SelectedProject="{Binding}" 
                   VersionType="{x:Static model:EVersionType.Version}" />
@@ -98,7 +98,7 @@
           </DataGridTemplateColumn.Header>
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
-              <local:VersionEditor 
+              <ctr:VersionEditor 
                   Projects="{Binding DataContext.Projects, RelativeSource={RelativeSource AncestorType=Window}}"
                   SelectedProject="{Binding}" 
                   VersionType="{x:Static model:EVersionType.AssemblyVersion}" />
@@ -115,7 +115,7 @@
           </DataGridTemplateColumn.Header>
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
-              <local:VersionEditor 
+              <ctr:VersionEditor 
                   Projects="{Binding DataContext.Projects, RelativeSource={RelativeSource AncestorType=Window}}"
                   SelectedProject="{Binding}" 
                   VersionType="{x:Static model:EVersionType.FileVersion}" />
@@ -132,7 +132,7 @@
           </DataGridTemplateColumn.Header>
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
-              <local:VersionEditor 
+              <ctr:VersionEditor 
                   Projects="{Binding DataContext.Projects, RelativeSource={RelativeSource AncestorType=Window}}"
                   SelectedProject="{Binding}" 
                   VersionType="{x:Static model:EVersionType.PackageVersion}" />

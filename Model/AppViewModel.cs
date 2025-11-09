@@ -11,6 +11,11 @@ namespace SolutionVersionHandler.Model
 {
   public class AppViewModel : NotifyPropertyChanged
   {
+    public record RecentSolutionFile(string FilePath)
+    {
+      public string FileName => System.IO.Path.GetFileName(this.FilePath);
+    }
+
     public static AppViewModel Instance { get; private set; }
 
     static AppViewModel()
@@ -18,7 +23,8 @@ namespace SolutionVersionHandler.Model
       AppViewModel.Instance = new()
       {
         Columns = [],
-        Projects = []
+        Projects = [],
+        RecentSolutionFiles = []
       };
     }
 
@@ -36,6 +42,12 @@ namespace SolutionVersionHandler.Model
     {
       get => GetProperty<ColumnList>(nameof(Columns))!;
       set => UpdateProperty(nameof(Columns), value);
+    }
+
+    public BindingList<RecentSolutionFile> RecentSolutionFiles
+    {
+      get => GetProperty<BindingList<RecentSolutionFile>>(nameof(RecentSolutionFiles))!;
+      set => UpdateProperty(nameof(RecentSolutionFiles), value);
     }
   }
 }

@@ -16,7 +16,7 @@ using SolutionVersionHandler.Model;
 using System.ComponentModel;
 using System.Printing;
 
-namespace SolutionVersionHandler
+namespace SolutionVersionHandler.Controls
 {
   /// <summary>
   /// Interaction logic for VersionEditor.xaml

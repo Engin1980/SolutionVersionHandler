@@ -3,6 +3,7 @@ using SolutionVersionHandler.Model;
 using SolutionVersionHandler.Services;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,6 +47,10 @@ namespace SolutionVersionHandler
         {
           Solution sol = new Analyser().AnalyseSolution(ofd.FileName);
           AppViewModel.Instance.Projects = sol.Projects;
+
+          AppViewModel.RecentSolutionFile recentSolutionFile = new(ofd.FileName);
+          if (AppViewModel.Instance.RecentSolutionFiles.Contains(recentSolutionFile) == false)
+            AppViewModel.Instance.RecentSolutionFiles.Add(recentSolutionFile);
         }
         catch (Exception ex)
         {
@@ -138,6 +143,31 @@ namespace SolutionVersionHandler
     private void cmbColumns_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       cmbColumns.SelectedItem = null;
+    }
+
+    private void btnLoadRecentSolution_Click(object sender, RoutedEventArgs e)
+    {
+      var frm = new Forms.RecentSolutionFileSelector();
+      frm.Owner = this;
+      frm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+      var res = frm.ShowDialog();
+      if (res == true && frm.SelectedSolutionFile !=null)
+      {
+        btnLoadRecentSolution.IsEnabled = false;
+        try
+        {
+          Solution sol = new Analyser().AnalyseSolution(frm.SelectedSolutionFile.FilePath);
+          AppViewModel.Instance.Projects = sol.Projects;
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show("Error loading solution: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+          btnLoadRecentSolution.IsEnabled = true;
+        }
+      }
     }
   }
 }
