@@ -50,7 +50,7 @@
         <DataGridTemplateColumn Header="?">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
-              <CheckBox IsChecked="{Binding IsChecked}" Margin="8" />
+              <CheckBox IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" Margin="8" />
             </DataTemplate>
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>

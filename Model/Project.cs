@@ -9,7 +9,10 @@ namespace SolutionVersionHandler.Model
 {
   public class Project : NotifyPropertyChanged
   {
-    public bool IsChecked { get => base.GetProperty<bool>(nameof(IsChecked)); set => base.UpdateProperty(nameof(IsChecked), value); }
+    public bool IsChecked { 
+      get => base.GetProperty<bool>(nameof(IsChecked)); 
+      set => base.UpdateProperty(nameof(IsChecked), value); 
+    }
     public string Name { get => base.GetProperty<string>(nameof(Name))!; set => base.UpdateProperty(nameof(Name), value); }
     public string FilePath { get => base.GetProperty<string>(nameof(FilePath))!; set => base.UpdateProperty(nameof(FilePath), value); }
     public Version? Version { get => base.GetProperty<Version>(nameof(Version))!; set => base.UpdateProperty(nameof(Version), value); }

@@ -152,8 +152,8 @@ namespace SolutionVersionHandler.Controls
       var getter = GetGetterByType(VersionType);
       var setter = GetSetterByType(VersionType);
       Model.Version? v = getter(this.SelectedProject)?.Clone();
-      var projs = this.Projects.Count(q => q.IsChecked) == 0 ? this.Projects : this.Projects.Where(q => q.IsChecked);
-      foreach (var project in Projects)
+      var projs = Projects.Where(q => q.IsChecked);
+      foreach (var project in projs)
         setter(project, v);
       ForceRebind();
     }
@@ -164,10 +164,25 @@ namespace SolutionVersionHandler.Controls
       Model.Version? v = getter(this.SelectedProject)?.Clone();
       foreach (EVersionType vt in Enum.GetValues(typeof(EVersionType)))
       {
+        var versionColumn = GetVersionColumnByType(vt);
+        if (versionColumn.IsChecked == false) continue;
         var setter = GetSetterByType(vt);
         setter(SelectedProject, v);
       }
       ForceRebind();
+    }
+
+    private Column GetVersionColumnByType(EVersionType versionType)
+    {
+      Column ret = versionType switch
+      {
+        EVersionType.AssemblyVersion => AppViewModel.Instance.Columns.AssemblyVersionColumn,
+        EVersionType.FileVersion => AppViewModel.Instance.Columns.FileVersionColumn,
+        EVersionType.PackageVersion => AppViewModel.Instance.Columns.PackageVersionColumn,
+        EVersionType.Version => AppViewModel.Instance.Columns.VersionColumn,
+        _ => throw new NotImplementedException()
+      };
+      return ret;
     }
 
     private void btnRemoveVersion_Click(object sender, RoutedEventArgs e)
