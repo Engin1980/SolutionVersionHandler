@@ -11,31 +11,31 @@
         DataContext="{Binding ShownVersion, RelativeSource={RelativeSource AncestorType={x:Type local:VersionEditor}}}">
     <DockPanel x:Name="pnlEmpty">
       <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-        <Button x:Name="btnSpreadAcrossProjects3" Content="⇅" Click="btnSpreadAcrossProjects_Click" Margin="4" />
-        <Button x:Name="btnSpreadAcrossVersionTypes3" Content="⇄" Click="btnSpreadAcrossVersionTypes_Click" Margin="4" />
-        <Button x:Name="btnNewTextVersion" Content="✚＄{..}" Click="btnNewTextVersion_Click" Margin="4" />
-        <Button x:Name="btnNewNumericVersion" Content="✚1.2.3.4" Click="btnNewNumericVersion_Click" Margin="4" />
+        <Button x:Name="btnSpreadAcrossProjects3" Content="⇅" Click="btnSpreadAcrossProjects_Click" Margin="4" Padding="4" />
+        <Button x:Name="btnSpreadAcrossVersionTypes3" Content="⇄" Click="btnSpreadAcrossVersionTypes_Click" Margin="4" Padding="4" />
+        <Button x:Name="btnNewTextVersion" Content="✚＄{..}" Click="btnNewTextVersion_Click" Margin="4" Padding="4" />
+        <Button x:Name="btnNewNumericVersion" Content="✚1.2.3.4" Click="btnNewNumericVersion_Click" Margin="4" Padding="4" />
       </StackPanel>
-      <Label>(not defined)</Label>
+      <Label Margin="4" Padding="4">(not defined)</Label>
     </DockPanel>
     <DockPanel x:Name="pnlUnparseable">
 
       <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-        <Button x:Name="btnSpreadAcrossProjects2" Content="⇅" Click="btnSpreadAcrossProjects_Click" Margin="4" />
-        <Button x:Name="btnSpreadAcrossVersionTypes2" Content="⇄" Click="btnSpreadAcrossVersionTypes_Click" Margin="4" />
+        <Button x:Name="btnSpreadAcrossProjects2" Content="⇅" Click="btnSpreadAcrossProjects_Click" Margin="4" Padding="4" />
+        <Button x:Name="btnSpreadAcrossVersionTypes2" Content="⇄" Click="btnSpreadAcrossVersionTypes_Click" Margin="4" Padding="4" />
         <Button x:Name="btnRemoveVersion2" Content="⛒" Click="btnRemoveVersion_Click" Margin="4" />
       </StackPanel>
-      <TextBox Text="{Binding Unparseable}" />
+      <TextBox Text="{Binding Unparseable}" Margin="4" Padding="4" />
     </DockPanel>
     <StackPanel x:Name="pnlVersion" Orientation="Horizontal">
-      <TextBox x:Name="txtMajor" Text="{Binding Major}" Width="25" Margin="2" />
-      <TextBox x:Name="txtMinor" Text="{Binding Minor}" Width="25" Margin="2" />
-      <TextBox x:Name="txtBuild" Text="{Binding Build}" Width="25" Margin="2" />
-      <TextBox x:Name="txtRevision" Text="{Binding Revision}" Width="25" Margin="2" />
+      <TextBox x:Name="txtMajor" Text="{Binding Major}" Width="25" Margin="4" Padding="0 4 0 4"  />
+      <TextBox x:Name="txtMinor" Text="{Binding Minor}" Width="25" Margin="4" Padding="0 4 0 4"  />
+      <TextBox x:Name="txtBuild" Text="{Binding Build}" Width="25" Margin="4" Padding="0 4 0 4" />
+      <TextBox x:Name="txtRevision" Text="{Binding Revision}" Width="25" Margin="4" Padding="4"  />
 
-      <Button x:Name="btnSpreadAcrossProjects" Content="⇅" Click="btnSpreadAcrossProjects_Click" Margin="4" />
-      <Button x:Name="btnSpreadAcrossVersionTypes" Content="⇄" Click="btnSpreadAcrossVersionTypes_Click" Margin="4" />
-      <Button x:Name="btnRemoveVersion" Content="⛒" Click="btnRemoveVersion_Click" Margin="4" />
+      <Button x:Name="btnSpreadAcrossProjects" Content="⇅" Click="btnSpreadAcrossProjects_Click" Margin="4" Padding="4" />
+      <Button x:Name="btnSpreadAcrossVersionTypes" Content="⇄" Click="btnSpreadAcrossVersionTypes_Click" Margin="4" Padding="4" />
+      <Button x:Name="btnRemoveVersion" Content="⛒" Click="btnRemoveVersion_Click" Margin="4" Padding="4" />
     </StackPanel>
   </Grid>
 </UserControl>

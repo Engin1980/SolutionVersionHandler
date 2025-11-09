@@ -45,7 +45,7 @@ namespace SolutionVersionHandler
         try
         {
           Solution sol = new Analyser().AnalyseSolution(ofd.FileName);
-          this.DataContext = sol;
+          AppViewModel.Instance.Projects = sol.Projects;
         }
         catch (Exception ex)
         {

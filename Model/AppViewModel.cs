@@ -17,15 +17,15 @@ namespace SolutionVersionHandler.Model
     {
       AppViewModel.Instance = new()
       {
-        Columns = new(),
-        Projects = new()
+        Columns = [],
+        Projects = []
       };
     }
 
     public BindingList<Project> Projects
     {
       get => GetProperty<BindingList<Project>>(nameof(Projects))!;
-      set => UpdateProperty(nameof(Project), value);
+      set => UpdateProperty(nameof(Projects), value);
     }
     public string? SolutionFile
     {
