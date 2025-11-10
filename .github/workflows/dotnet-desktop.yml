@@ -34,29 +34,29 @@ jobs:
             Write-Error "Version tag not found in .csproj"
             exit 1
           }
-          echo "Detected version: $version"
+          Write-Host "Detected version: $version"
           echo "version=$version" >> $env:GITHUB_OUTPUT        
 
       - name: Publish app
         run: dotnet publish SolutionVersionHandler/SolutionVersionHandler.csproj --configuration Release --output ./publish
 
       - name: Create ZIP archive
-        run: Compress-Archive -Path publish\* -DestinationPath SolutionVersionHandler.zip
+        run: Compress-Archive -Path publish\* -DestinationPath SolutionVersionHandler-${{ steps.get_version.outputs.version }}.zip
 
       - name: Upload artifact (for debug)
         uses: actions/upload-artifact@v4
         with:
-          name: SolutionVersionHandler
-          path: SolutionVersionHandler.zip
+          name: SolutionVersionHandler-${{ steps.get_version.outputs.version }}
+          path: SolutionVersionHandler-${{ steps.get_version.outputs.version }}.zip
 
       - name: Create GitHub Release
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.run_number }}
-          name: "Release ${{ github.run_number }}"
-          draft: true
+          tag_name: v${{ steps.get_version.outputs.version }}
+          name: "SolutionVersionHandler v${{ steps.get_version.outputs.version }}"
+          draft: true     # záměrně necháváš draft, takže release bude čekat na ruční publikaci
           prerelease: false
-          files: MyApp.zip
+          files: SolutionVersionHandler-${{ steps.get_version.outputs.version }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
