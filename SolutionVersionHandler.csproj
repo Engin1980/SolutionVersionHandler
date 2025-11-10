@@ -12,10 +12,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ESystem">
-      <HintPath>..\eSystem\_Release\ESystem.dll</HintPath>
+      <HintPath>DLLs\ESystem.dll</HintPath>
     </Reference>
     <Reference Include="ESystem.WPF">
-      <HintPath>..\eSystem\_Release\ESystem.WPF.dll</HintPath>
+      <HintPath>DLLs\ESystem.WPF.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
