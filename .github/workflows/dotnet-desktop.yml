@@ -28,7 +28,7 @@ jobs:
         id: get_version
         shell: pwsh
         run: |
-          [xml]$proj = Get-Content "SolutionVersionHandler/SolutionVersionHandler.csproj"
+          [xml]$proj = Get-Content "SolutionVersionHandler.csproj"
           $version = $proj.Project.PropertyGroup.Version
           if (-not $version) {
             Write-Error "Version tag not found in .csproj"
