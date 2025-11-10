@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         FontSize="14"
         FontFamily="Bookman Old Style"
-        Title="Solution Version Handler" Height="450" Width="800">
+        Title="Solution Version Handler" Height="450" Width="1500">
   <DockPanel x:Name="pnlMainPanel">
     <DockPanel DockPanel.Dock="Top">
       <GroupBox Header="Open &amp; Save" Margin="8">
@@ -62,7 +62,9 @@
         </DataGridTemplateColumn>
         <DataGridTemplateColumn 
           Header="{Binding DataContext.Columns.ProjectColumn.Title, Source={x:Reference dummyElement}}"
-          Visibility="{Binding DataContext.Columns.ProjectColumn.Visibility, Source={x:Reference dummyElement}}" >
+          Visibility="{Binding DataContext.Columns.ProjectColumn.Visibility, Source={x:Reference dummyElement}}" 
+          Width="SizeToCells"
+          MinWidth="50">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
               <TextBlock Text="{Binding Name}" Margin="8" />
@@ -78,7 +80,9 @@
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
         <DataGridTemplateColumn 
-          Visibility="{Binding DataContext.Columns.VersionColumn.Visibility, Source={x:Reference dummyElement}}">
+          Visibility="{Binding DataContext.Columns.VersionColumn.Visibility, Source={x:Reference dummyElement}}"
+          Width="SizeToCells"
+          MinWidth="150">
           <DataGridTemplateColumn.Header>
             <StackPanel Orientation="Horizontal">
               <CheckBox Margin="0 0 4 0" IsChecked="{Binding DataContext.Columns.VersionColumn.IsChecked, Source={x:Reference dummyElement}}" />
@@ -95,7 +99,9 @@
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
         <DataGridTemplateColumn 
-          Visibility="{Binding DataContext.Columns.AssemblyVersionColumn.Visibility, Source={x:Reference dummyElement}}">
+          Visibility="{Binding DataContext.Columns.AssemblyVersionColumn.Visibility, Source={x:Reference dummyElement}}"
+          Width="SizeToCells"          
+          MinWidth="150">
           <DataGridTemplateColumn.Header>
             <StackPanel Orientation="Horizontal">
               <CheckBox Margin="0 0 4 0" IsChecked="{Binding DataContext.Columns.AssemblyVersionColumn.IsChecked, Source={x:Reference dummyElement}}" />
@@ -112,7 +118,9 @@
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
         <DataGridTemplateColumn 
-          Visibility="{Binding DataContext.Columns.FileVersionColumn.Visibility, Source={x:Reference dummyElement}}">
+          Visibility="{Binding DataContext.Columns.FileVersionColumn.Visibility, Source={x:Reference dummyElement}}"
+          Width="SizeToCells"
+          MinWidth="150">
           <DataGridTemplateColumn.Header>
             <StackPanel Orientation="Horizontal">
               <CheckBox Margin="0 0 4 0" IsChecked="{Binding DataContext.Columns.FileVersionColumn.IsChecked, Source={x:Reference dummyElement}}" />
@@ -129,7 +137,9 @@
           </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
         <DataGridTemplateColumn 
-          Visibility="{Binding DataContext.Columns.PackageVersionColumn.Visibility, Source={x:Reference dummyElement}}">
+          Visibility="{Binding DataContext.Columns.PackageVersionColumn.Visibility, Source={x:Reference dummyElement}}"
+          Width="SizeToCells"
+          MinWidth="150">
           <DataGridTemplateColumn.Header>
             <StackPanel Orientation="Horizontal">
               <CheckBox Margin="0 0 4 0" IsChecked="{Binding DataContext.Columns.PackageVersionColumn.IsChecked, Source={x:Reference dummyElement}}" />

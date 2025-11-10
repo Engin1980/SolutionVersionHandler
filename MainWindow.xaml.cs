@@ -29,9 +29,6 @@ namespace SolutionVersionHandler
       vm.Columns.Create(ColumnList.PACKAGE_VERSION_COLUMN_TITLE);
       vm.Columns.Create(ColumnList.FILE_VERSION_COLUMN_TITLE);
 
-      // load solution
-      Solution sol = new Analyser().AnalyseSolution(@"D:\repos\eSystem\ESystemNet.sln");
-      vm.Projects = sol.Projects;
       this.DataContext = vm;
     }
 
