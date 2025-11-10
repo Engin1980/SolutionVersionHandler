@@ -1,0 +1,62 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore SolutionVersionHandler.sln
+
+      - name: Build in Release mode
+        run: dotnet build SolutionVersionHandler.sln --configuration Release --no-restore
+
+      - name: Extract version from .csproj
+        id: get_version
+        shell: pwsh
+        run: |
+          [xml]$proj = Get-Content "SolutionVersionHandler/SolutionVersionHandler.csproj"
+          $version = $proj.Project.PropertyGroup.Version
+          if (-not $version) {
+            Write-Error "Version tag not found in .csproj"
+            exit 1
+          }
+          echo "Detected version: $version"
+          echo "version=$version" >> $env:GITHUB_OUTPUT        
+
+      - name: Publish app
+        run: dotnet publish SolutionVersionHandler/SolutionVersionHandler.csproj --configuration Release --output ./publish
+
+      - name: Create ZIP archive
+        run: Compress-Archive -Path publish\* -DestinationPath SolutionVersionHandler.zip
+
+      - name: Upload artifact (for debug)
+        uses: actions/upload-artifact@v4
+        with:
+          name: SolutionVersionHandler
+          path: SolutionVersionHandler.zip
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: "Release ${{ github.run_number }}"
+          draft: true
+          prerelease: false
+          files: MyApp.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
