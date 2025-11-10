@@ -38,7 +38,7 @@ jobs:
           echo "version=$version" >> $env:GITHUB_OUTPUT        
 
       - name: Publish app
-        run: dotnet publish SolutionVersionHandler/SolutionVersionHandler.csproj --configuration Release --output ./publish
+        run: dotnet publish SolutionVersionHandler.csproj --configuration Release --output ./publish
 
       - name: Create ZIP archive
         run: Compress-Archive -Path publish\* -DestinationPath SolutionVersionHandler-${{ steps.get_version.outputs.version }}.zip
