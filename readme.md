@@ -1,5 +1,7 @@
 # SolutionVersionHandler
 
+!!! Work in progresss !!!
+
 SolutionVersionHandler is a small WPF desktop tool for inspecting and editing project version information inside a Visual Studio solution. It provides a grid of discovered projects and per-project editors for package, assembly and file versions, and helpers to propagate version changes across projects.
 
 This repository targets .NET 8 and is intended to be run on Windows (WPF).

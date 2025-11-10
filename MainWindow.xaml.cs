@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using ESystem.Asserting;
+using Microsoft.Win32;
 using SolutionVersionHandler.Model;
 using SolutionVersionHandler.Services;
 using System;
@@ -42,15 +43,11 @@ namespace SolutionVersionHandler
       };
       if (ofd.ShowDialog() == true)
       {
-        btnLoadSolution.IsEnabled = false;
+        AppViewModel.Instance.State.IsBusy = true;
         try
         {
-          Solution sol = new Analyser().AnalyseSolution(ofd.FileName);
-          AppViewModel.Instance.Projects = sol.Projects;
-
-          AppViewModel.RecentSolutionFile recentSolutionFile = new(ofd.FileName);
-          if (AppViewModel.Instance.RecentSolutionFiles.Contains(recentSolutionFile) == false)
-            AppViewModel.Instance.RecentSolutionFiles.Add(recentSolutionFile);
+          LoadAndSetSolutionProjects(ofd.FileName);
+          UpdateRecentSolutionFilesList(ofd);
         }
         catch (Exception ex)
         {
@@ -58,9 +55,16 @@ namespace SolutionVersionHandler
         }
         finally
         {
-          btnLoadSolution.IsEnabled = true;
+          AppViewModel.Instance.State.IsBusy = false;
         }
       }
+    }
+
+    private static void UpdateRecentSolutionFilesList(OpenFileDialog ofd)
+    {
+      AppViewModel.RecentSolutionFile recentSolutionFile = new(ofd.FileName);
+      if (AppViewModel.Instance.RecentSolutionFiles.Contains(recentSolutionFile) == false)
+        AppViewModel.Instance.RecentSolutionFiles.Add(recentSolutionFile);
     }
 
     private void btnSaveProjects_Click(object sender, RoutedEventArgs e)
@@ -69,13 +73,11 @@ namespace SolutionVersionHandler
       var result = MessageBox.Show("Are you sure you want to save all project files with the updated versions?", "Confirm Save", MessageBoxButton.YesNo, MessageBoxImage.Question);
       if (result == MessageBoxResult.Yes)
       {
-        // temporally only messagebox
-        MessageBox.Show("Projects saved successfully.", "Save Complete", MessageBoxButton.OK, MessageBoxImage.Information);
-
-        btnSaveProjects.IsEnabled = false;
+        AppViewModel.Instance.State.IsBusy = true;
         try
         {
           SaveProjects();
+          MessageBox.Show("Changes saved.");
         }
         catch (Exception ex)
         {
@@ -83,62 +85,16 @@ namespace SolutionVersionHandler
         }
         finally
         {
-          btnSaveProjects.IsEnabled = true;
+          AppViewModel.Instance.State.IsBusy = false;
         }
       }
     }
 
     private void SaveProjects()
     {
-      foreach (Project proj in ((Solution)this.DataContext).Projects)
-      {
-        SaveProject(proj);
-      }
+      LoadSaveProvider.SaveProjects(AppViewModel.Instance.Projects);
     }
 
-    private void SaveProject(Project proj)
-    {
-      System.IO.File.Copy(proj.FilePath, proj.FilePath + ".versions.bak", true);
-
-      // load project's xml file
-      var doc = System.Xml.Linq.XDocument.Load(proj.FilePath);
-
-      if (doc == null) throw new ApplicationException("Project file contains no document: " + proj.FilePath);
-      if (doc.Root == null) throw new ApplicationException("Project file has no root element: " + proj.FilePath);
-
-      // get PropertyGroup
-      var propertyGroups = doc.Root.Elements("PropertyGroup");
-      foreach (var pg in propertyGroups)
-      {
-        // set versions
-        SetVersionElement(pg, "AssemblyVersion", proj.AssemblyVersion);
-        SetVersionElement(pg, "FileVersion", proj.FileVersion);
-        SetVersionElement(pg, "PackageVersion", proj.PackageVersion);
-        SetVersionElement(pg, "Version", proj.Version);
-      }
-
-      doc.Save(proj.FilePath);
-    }
-
-    private void SetVersionElement(XElement pg, string elementName, Model.Version? version)
-    {
-      // if version == null, remove potetinal subelement from pg
-      if (version == null)
-      {
-        var elToRemove = pg.Element(elementName);
-        elToRemove?.Remove();
-        return;
-      }
-      else
-      {
-        string value = version.Unparseable ?? version.FullVersion;
-        var el = pg.Element(elementName);
-        if (el == null)
-          pg.Add(new XElement(elementName, value));
-        else
-          el.Value = value;
-      }
-    }
 
     private void cmbColumns_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -151,13 +107,12 @@ namespace SolutionVersionHandler
       frm.Owner = this;
       frm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
       var res = frm.ShowDialog();
-      if (res == true && frm.SelectedSolutionFile !=null)
+      if (res == true && frm.SelectedSolutionFile != null)
       {
-        btnLoadRecentSolution.IsEnabled = false;
+        AppViewModel.Instance.State.IsBusy = true;
         try
         {
-          Solution sol = new Analyser().AnalyseSolution(frm.SelectedSolutionFile.FilePath);
-          AppViewModel.Instance.Projects = sol.Projects;
+          LoadAndSetSolutionProjects(frm.SelectedSolutionFile.FilePath);
         }
         catch (Exception ex)
         {
@@ -165,8 +120,42 @@ namespace SolutionVersionHandler
         }
         finally
         {
-          btnLoadRecentSolution.IsEnabled = true;
+          AppViewModel.Instance.State.IsBusy = false;
         }
+      }
+    }
+
+    private void LoadAndSetSolutionProjects(string filePath)
+    {
+      Solution sol = LoadSaveProvider.LoadSolution(filePath);
+      AppViewModel.Instance.Projects = sol.Projects;
+      AppViewModel.Instance.SolutionFile = filePath;
+      AppViewModel.Instance.State.IsSomeSolutionFileSet = true;
+    }
+
+    private void btnReloadCurrent_Click(object sender, RoutedEventArgs e)
+    {
+      var conf = MessageBox.Show(
+        "Are you sure you want to reload the current solution? Unsaved changes will be lost.",
+        "Confirm Reload",
+        MessageBoxButton.YesNo,
+        MessageBoxImage.Question);
+      if (conf != MessageBoxResult.Yes)
+        return;
+
+      EAssert.IsNotNull(AppViewModel.Instance.SolutionFile);
+      AppViewModel.Instance.State.IsBusy = true;
+      try
+      {
+        LoadAndSetSolutionProjects(AppViewModel.Instance.SolutionFile);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show("Error loading solution: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+      }
+      finally
+      {
+        AppViewModel.Instance.State.IsBusy = false;
       }
     }
   }

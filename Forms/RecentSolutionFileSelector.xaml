@@ -9,7 +9,7 @@
         SizeToContent="WidthAndHeight"
                 FontSize="14"
         FontFamily="Bookman Old Style"
-        Title="RecentSolutionFileSelector" Height="150" Width="800">
+        Title="Select recent solution file..." Height="150" Width="800">
   <Window.Resources>
     <conv:FilePathExistsToBrushConverter x:Key="FilePathExistsToBrushConverter" />
   </Window.Resources>

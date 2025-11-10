@@ -9,15 +9,21 @@
         mc:Ignorable="d"
         FontSize="14"
         FontFamily="Bookman Old Style"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Solution Version Handler" Height="450" Width="800">
   <DockPanel x:Name="pnlMainPanel">
     <DockPanel DockPanel.Dock="Top">
       <GroupBox Header="Open &amp; Save" Margin="8">
         <StackPanel Orientation="Horizontal">
           <Button x:Name="btnLoadSolution" Margin="8" Padding="6" Click="btnLoadSolution_Click" >📂</Button>
           <Button x:Name="btnLoadRecentSolution" Margin="8" Padding="6" Click="btnLoadRecentSolution_Click" >🕔📂</Button>
-          <Button Margin="8" Padding="6" >⭮</Button>
-          <Button x:Name="btnSaveProjects" Margin="8" Padding="6" Click="btnSaveProjects_Click" >💾</Button>
+          <Button x:Name="btnReloadCurrent" 
+                  Margin="8" 
+                  Padding="6"
+                  IsEnabled="{Binding State.IsSaveLikeButtonEnabled}"
+                  Click="btnReloadCurrent_Click" >⭮</Button>
+          <Button x:Name="btnSaveProjects" Margin="8" Padding="6" 
+                  Click="btnSaveProjects_Click"
+                  IsEnabled="{Binding State.IsSaveLikeButtonEnabled}">💾</Button>
         </StackPanel>
       </GroupBox>
       <GroupBox Header="UI" Margin="8">
