@@ -45,6 +45,7 @@ namespace SolutionVersionHandler
         {
           LoadAndSetSolutionProjects(ofd.FileName);
           UpdateRecentSolutionFilesList(ofd);
+          UpdateCheckedColumns();
         }
         catch (Exception ex)
         {
@@ -55,6 +56,18 @@ namespace SolutionVersionHandler
           AppViewModel.Instance.State.IsBusy = false;
         }
       }
+    }
+
+    private void UpdateCheckedColumns()
+    {
+      AppViewModel.Instance.Columns[ColumnList.VERSION_COLUMN_TITLE].IsChecked =
+        AppViewModel.Instance.Projects.Any(q => q.Version != null);
+      AppViewModel.Instance.Columns[ColumnList.ASSEMBLY_VERSION_COLUMN_TITLE].IsChecked =
+        AppViewModel.Instance.Projects.Any(q => q.AssemblyVersion != null);
+      AppViewModel.Instance.Columns[ColumnList.FILE_VERSION_COLUMN_TITLE].IsChecked =
+        AppViewModel.Instance.Projects.Any(q => q.FileVersion != null);
+      AppViewModel.Instance.Columns[ColumnList.PACKAGE_VERSION_COLUMN_TITLE].IsChecked =
+        AppViewModel.Instance.Projects.Any(q => q.PackageVersion != null);
     }
 
     private static void UpdateRecentSolutionFilesList(OpenFileDialog ofd)
@@ -110,6 +123,7 @@ namespace SolutionVersionHandler
         try
         {
           LoadAndSetSolutionProjects(frm.SelectedSolutionFile.FilePath);
+          UpdateCheckedColumns();
         }
         catch (Exception ex)
         {
